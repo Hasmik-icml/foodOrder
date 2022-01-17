@@ -1,24 +1,24 @@
 package com.pizza.pizzamakerservise.repository;
 
+import com.pizza.pizzamakerservise.model.Product;
 import com.pizza.pizzamakerservise.model.Table;
 
 import java.util.List;
 
-public class TableRepository {
-    public Table read(int id){
+public class ProductRepository {
+    public Product read(int id){
         return null;
     }
-    public List<Table> readAll(){
+    public List<Product> readAll(){
         return null;
     }
-    public void create (Table table){
+    public void create (Product product){
 
     }
-    public Table update(int id, Table table){
+    public Product update(int id, Product product){
         return null;
     }
     public void delete(int id){
 
     }
-
 }
