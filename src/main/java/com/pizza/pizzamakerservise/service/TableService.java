@@ -10,9 +10,13 @@ public interface TableService {
 
     List<Table> readAll();
 
+    List<Table> readByBusy(boolean isBusy);
+
+    List<Table> readBySeatCount(int seatCount);
+
     void create(Table table);
 
-    Table update (int id, Table table);
+    Table update(int id, Table table);
 
-    void delete (int id);
+    void delete(int id);
 }

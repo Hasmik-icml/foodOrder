@@ -10,9 +10,11 @@ public interface ProductTypeService {
 
     List<ProductType> readAll();
 
+    ProductType read(String name);
+
     void create(ProductType productType);
 
-    Table update (int id, ProductType roductType);
+    Table update (int id, ProductType productType);
 
     void delete (int id);
 }

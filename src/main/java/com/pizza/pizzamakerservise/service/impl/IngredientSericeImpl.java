@@ -1,11 +1,23 @@
 package com.pizza.pizzamakerservise.service.impl;
 
 import com.pizza.pizzamakerservise.model.Ingredient;
+import com.pizza.pizzamakerservise.repository.IngredientRepository;
 import com.pizza.pizzamakerservise.service.IngredientService;
 
 import java.util.List;
 
 public class IngredientSericeImpl implements IngredientService {
+private final IngredientRepository ingredientRepository = new IngredientRepository() ;
+    @Override
+    public Ingredient read(String name) {
+        return null;
+    }
+
+    @Override
+    public List<Ingredient> readByEditable(boolean isEditable) {
+        return null;
+    }
+
     @Override
     public Ingredient read(int id) {
         return null;
