@@ -14,7 +14,7 @@ public interface ProductTypeService {
 
     void create(ProductType productType);
 
-    Table update (int id, ProductType productType);
+    ProductType update(int id, ProductType productType);
 
-    void delete (int id);
+    void delete(int id);
 }

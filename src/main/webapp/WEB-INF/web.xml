@@ -38,4 +38,15 @@
         <servlet-name>productTypeController</servlet-name>
         <url-pattern>/productType</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>orderController</servlet-name>
+        <servlet-class>com.pizza.pizzamakerservise.controller.OrderController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>orderController</servlet-name>
+        <url-pattern>/order</url-pattern>
+    </servlet-mapping>
+
+
 </web-app>

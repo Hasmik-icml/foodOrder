@@ -7,12 +7,12 @@ import java.sql.SQLException;
 public class SQLConnecter {
     private static final String user="root";
     private static final String password="";
-    private static final String DB="foodOrder";
+    private static final String DB="pizzamakerservice";
     private static final String url="jdbc:mysql://localhost:3306/"+DB;
 
     private static Connection connection=null;
 
-    private SQLConnecter() {
+    public SQLConnecter() {
     }
 
     public static Connection getConnection(){

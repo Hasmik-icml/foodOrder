@@ -2,37 +2,184 @@ package com.pizza.pizzamakerservise.repository;
 
 import com.pizza.pizzamakerservise.model.ProductType;
 import com.pizza.pizzamakerservise.model.Table;
+import com.pizza.pizzamakerservise.util.SQLConnecter;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
 public class ProductTypeRepository {
 
-    public ProductType read(String name){
-        return new ProductType(4, name);
+    public ProductType read(int id) {
+        Connection connection = SQLConnecter.getConnection();
+        PreparedStatement pstmt = null;
+        ResultSet resultSet = null;
+        try {
+            pstmt = connection.prepareStatement("SELECT * FROM `productType` WHERE id=?");
+            pstmt.setInt(1, id);
+            resultSet = pstmt.executeQuery();
+
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+        ProductType productType=null;
+        try{
+            while (resultSet.next()){
+                productType=mapper(resultSet);
+            }
+        }catch (SQLException ex){
+            ex.printStackTrace();
+        }
+        try{
+            pstmt.close();
+            resultSet.close();
+            connection.close();
+        }catch (SQLException sqlException){
+            sqlException.printStackTrace();
+        }
+        return productType;
     }
 
-    public ProductType read(int id){
-        return new ProductType(id, "name" + new Random().nextInt(10)+1);
+    public ProductType read(String name) {
+        Connection connection = SQLConnecter.getConnection();
+        PreparedStatement pstmt = null;
+        ResultSet resultSet = null;
+        try {
+            pstmt = connection.prepareStatement("SELECT * FROM `productType` WHERE name=?");
+            pstmt.setString(1,name);
+            resultSet = pstmt.executeQuery();
+
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+        ProductType productType=null;
+        try{
+            while (resultSet.next()){
+                productType=mapper(resultSet);
+            }
+        }catch (SQLException ex){
+            ex.printStackTrace();
+        }
+        try{
+            pstmt.close();
+            resultSet.close();
+            connection.close();
+        }catch (SQLException sqlException){
+            sqlException.printStackTrace();
+        }
+        return productType;
     }
 
     public List<ProductType> readAll() {
-        List<ProductType> objects = new LinkedList<>();
-        objects.add(new ProductType(1, "xorovac"));
-        objects.add(new ProductType(2, "alcohol"));
-        objects.add(new ProductType(3, "qaxcr"));
-        objects.add(new ProductType(4, "sare"));
+        Connection connection = SQLConnecter.getConnection();
+        PreparedStatement pstmt = null;
+        ResultSet resultSet = null;
 
-        return objects;
+        try {
+            pstmt = connection.prepareStatement("SELECT * from `productType`");
+            resultSet = pstmt.executeQuery();
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+
+        List<ProductType> data = mapperList(resultSet);
+
+
+        try {
+            pstmt.close();
+            resultSet.close();
+            connection.close();
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+
+        return data;
     }
-    public void create (ProductType productType){
+
+    public void create(ProductType productType) {
+        Connection connection = SQLConnecter.getConnection();
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `productType` values (0,?)");
+
+            preparedStatement.setString(1, productType.getName());
+
+
+            int i = preparedStatement.executeUpdate();
+
+            preparedStatement.close();
+            connection.close();
+
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
 
     }
-    public ProductType update(int id, ProductType productType){
-        return null;
-    }
-    public void delete(int id){
 
+    public ProductType update(int id, ProductType productType) {
+
+        Connection connection = SQLConnecter.getConnection();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `productType` SET name = ? WHERE id = ?");
+            preparedStatement.setString(1,productType.getName());
+            preparedStatement.setInt(2,productType.getId());
+
+            int i = preparedStatement.executeUpdate();
+
+            preparedStatement.close();
+
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        try {
+            connection.close();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+        return productType;
+    }
+
+    public void delete(int id) {
+        Connection connection = SQLConnecter.getConnection();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `productType` where id=?");
+            preparedStatement.setInt(1, id);
+            int i = preparedStatement.executeUpdate();
+
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private static List<ProductType> mapperList(ResultSet resultSet) {
+        List<ProductType> data = new LinkedList<>();
+        try {
+            while (resultSet.next()) {
+                data.add(mapper(resultSet));
+            }
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+        return data;
+    }
+
+    private static ProductType mapper(ResultSet resultSet)  {
+        ProductType productType = new ProductType();
+        try {
+            productType.setId(resultSet.getInt("id"));
+            productType.setName(resultSet.getString("name"));
+        }catch(SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+
+        return productType;
     }
 }

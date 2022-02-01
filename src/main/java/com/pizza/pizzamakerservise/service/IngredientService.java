@@ -10,13 +10,11 @@ public interface IngredientService {
 
     Ingredient read(String name);
 
-    List<Ingredient> readByEditable(boolean isEditable);
-
     List<Ingredient> readAll();
 
     void create(Ingredient ingredient);
 
-    Ingredient update (int id, Ingredient ingredient);
+    Ingredient update(int id, Ingredient ingredient);
 
-    void delete (int id);
+    void delete(int id);
 }

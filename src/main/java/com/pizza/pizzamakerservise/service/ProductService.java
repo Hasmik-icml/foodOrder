@@ -2,17 +2,20 @@ package com.pizza.pizzamakerservise.service;
 
 import com.pizza.pizzamakerservise.model.Product;
 import com.pizza.pizzamakerservise.model.Table;
+import com.pizza.pizzamakerservise.model.dto.ProductDto;
 
 import java.util.List;
 
 public interface ProductService {
-    Product read(int id);
+    ProductDto read(int id);
 
-    List<Product> readAll();
+    List<ProductDto> readAll();
 
-    void create(Product product);
+    List<ProductDto> readAllByProductType(int productTypeId);
 
-    Product update (int id, Product product);
+    void create();
 
-    void delete (int id);
+    Product update(int id, Product product);
+
+    void delete(int id);
 }

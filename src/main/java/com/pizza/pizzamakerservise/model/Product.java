@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import lombok.*;
 
+import java.util.List;
 @Getter
 @Setter
 @ToString
@@ -16,8 +17,8 @@ public class Product {
      private int id;
      private int productTypeId;
      private String name;
-     private Float price;
-     private String img;
-
+     private float price;
+     private String imagePath;
+     private String currency;
 
 }

@@ -13,6 +13,4 @@ import lombok.*;
 public class ProductType {
     private int id;
     private String name;
-
-
 }

@@ -1,5 +1,6 @@
 package com.pizza.pizzamakerservise.repository;
 
+import com.pizza.pizzamakerservise.model.Order;
 import com.pizza.pizzamakerservise.model.Table;
 import com.pizza.pizzamakerservise.util.SQLConnecter;
 
@@ -10,23 +11,23 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class TableRepository {
-    public Table read(int id) {
+public class OrderRepository {
+    public Order read(int table_id) {
         Connection connection = SQLConnecter.getConnection();
         PreparedStatement pstmt = null;
         ResultSet resultSet = null;
         try {
-            pstmt = connection.prepareStatement("SELECT * from `table` WHERE id=?");
-            pstmt.setInt(1, id);
+            pstmt = connection.prepareStatement("SELECT * from `order` WHERE table_id=?");
+            pstmt.setInt(1, table_id);
             resultSet = pstmt.executeQuery();
 
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
-        Table table=null;
+        Order order=null;
         try{
             while (resultSet.next()){
-                table=mapper(resultSet);
+                order=mapper(resultSet);
             }
         }catch (SQLException ex){
             ex.printStackTrace();
@@ -38,24 +39,24 @@ public class TableRepository {
         }catch (SQLException sqlException){
             sqlException.printStackTrace();
         }
-        return table;
+        return order;
 
     }
 
-    public List<Table> readAll() {
+    public List<Order> readAll() {
 
         Connection connection = SQLConnecter.getConnection();
         PreparedStatement pstmt = null;
         ResultSet resultSet = null;
 
         try {
-            pstmt = connection.prepareStatement("SELECT * from `table`");
+            pstmt = connection.prepareStatement("SELECT * from `order`");
             resultSet = pstmt.executeQuery();
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
 
-        List<Table> data = mapperList(resultSet);
+        List<Order> data = mapperList(resultSet);
 
 
         try {
@@ -69,14 +70,16 @@ public class TableRepository {
         return data;
     }
 
-    public void create(Table table) {
+    public void create(Order order) {
         Connection connection = SQLConnecter.getConnection();
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `table` values (0,?,?,?)");
-            preparedStatement.setInt(1, table.getNumber());
-            preparedStatement.setInt(2, table.getSeats());
-            preparedStatement.setBoolean(3, table.isBusy());
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `order` values (0,?,?,?,?,?)");
+            preparedStatement.setInt(1, order.getTable_id());
+            preparedStatement.setBoolean(2, order.isIn_process());
+            preparedStatement.setInt(3, order.getProductId());
+            preparedStatement.setInt(4, order.getQuantity());
+            preparedStatement.setFloat(5, order.getAmount());
 
             int i = preparedStatement.executeUpdate();
 
@@ -88,16 +91,18 @@ public class TableRepository {
         }
     }
 
-    public Table update(int id, Table table) {
+    public Order update(int id, Order order) { /// Id or table_id
         Connection connection = SQLConnecter.getConnection();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `table` SET number = ?, seats = ?, is_busy=? WHERE id = ?");
-            preparedStatement.setInt(1, table.getNumber());
-            preparedStatement.setInt(2, table.getSeats());
-            preparedStatement.setBoolean(3, table.isBusy());
-            preparedStatement.setInt(4, table.getId());
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `order` SET table_id = ?, in_process = ?, productId=?, quantity = ?, amount = ? WHERE id = ?");
+            preparedStatement.setInt(1, order.getTable_id());
+            preparedStatement.setBoolean(2, order.isIn_process());
+            preparedStatement.setInt(3, order.getProductId());
+            preparedStatement.setInt(4, order.getQuantity());
+            preparedStatement.setFloat(5, order.getAmount());
+            preparedStatement.setInt(6, order.getId());
 
-            int i = preparedStatement.executeUpdate();
+            int i = preparedStatement.executeUpdate();//???????????????
 
             preparedStatement.close();
 
@@ -111,16 +116,17 @@ public class TableRepository {
             exception.printStackTrace();
         }
 
-        return table;
+        return order;
     }
 
-    public void delete(int id) {
+    public void delete(int table_id) {
 
         Connection connection = SQLConnecter.getConnection();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `table` where id=?");
-            preparedStatement.setInt(1, id);
-            int i = preparedStatement.executeUpdate();
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `order` where table_id=?");
+            preparedStatement.setInt(1, table_id);
+
+            int i = preparedStatement.executeUpdate();//????????????????
 
             preparedStatement.close();
             connection.close();
@@ -130,8 +136,8 @@ public class TableRepository {
 
     }
 
-    private static List<Table> mapperList(ResultSet resultSet) {
-        List<Table> data = new LinkedList<>();
+    private static List<Order> mapperList(ResultSet resultSet) {
+        List<Order> data = new LinkedList<>();
         try {
             while (resultSet.next()) {
                 data.add(mapper(resultSet));
@@ -142,18 +148,20 @@ public class TableRepository {
         return data;
     }
 
-    private static Table mapper(ResultSet resultSet) {
-        Table t = new Table();
+    private static Order mapper(ResultSet resultSet) {
+        Order o = new Order();
         try {
-            t.setId(resultSet.getInt("id"));
-            t.setNumber(resultSet.getInt("number"));
-            t.setSeats(resultSet.getInt("seats"));
-            t.setBusy(resultSet.getBoolean("is_busy"));
+            o.setId(resultSet.getInt("id"));
+            o.setTable_id(resultSet.getInt("table_id"));
+            o.setIn_process(resultSet.getBoolean("in_process"));
+            o.setProductId(resultSet.getInt("productId"));
+            o.setQuantity(resultSet.getInt("quantity"));
+            o.setAmount(resultSet.getFloat("amount"));
 
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         }
-        return t;
+        return o;
     }
 
 }

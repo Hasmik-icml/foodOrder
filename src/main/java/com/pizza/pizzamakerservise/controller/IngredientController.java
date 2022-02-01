@@ -3,6 +3,8 @@ package com.pizza.pizzamakerservise.controller;
 import com.google.gson.Gson;
 import com.pizza.pizzamakerservise.model.Ingredient;
 import com.pizza.pizzamakerservise.model.Table;
+import com.pizza.pizzamakerservise.service.IngredientService;
+import com.pizza.pizzamakerservise.service.impl.IngredientSericeImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,94 +17,82 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class IngredientController extends HttpServlet {
-
-    private List<Ingredient> list = new LinkedList<>();
-    private static Random random = new Random();
-
-    private Gson gson = new Gson();
+    private final IngredientService ingredientService = new IngredientSericeImpl();
+    private final Gson gson = new Gson();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().println("This is Get method in Ingredient");
-        if (list.size() == 0) {
-            for (int i = 0; i < 10; i++) {
-                list.add(new Ingredient(i, "ingredient" + i + 1, random.nextBoolean(),
-                        random.nextInt(10) + 1, random.nextInt(5) + 1,
-                        random.nextInt(50) + 1, "gr"));
-            }
-            System.out.println(list);
+        List<Ingredient> data = new LinkedList<>();
+        final String url = req.getParameter("url");
+
+        switch (url) {
+            case "get-all":
+                data.addAll(ingredientService.readAll());
+                break;
+            case "get-by-id":
+                int id = Integer.parseInt(req.getParameter("id"));
+                Ingredient readById = ingredientService.read(id);
+                if (readById != null) {
+                    data.add(readById);
+                }
+                break;
+            case "get-name":
+                String name = req.getParameter("name");
+                Ingredient readByName = ingredientService.read(name);
+                if (readByName != null) {
+                    data.add(readByName);
+                }
+                break;
+            default:
+                resp.sendError(404, "hargelis sxalvel es");
+                break;
         }
-
-        resp.getWriter().println(gson.toJson(list));
+        resp.getWriter().println(gson.toJson(data));
     }
-
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().println("this is post method in Ingredient");
 
         String name = req.getParameter("name");
-        boolean editable = Boolean.parseBoolean(req.getParameter("editable"));
-        int editStep = Integer.parseInt(req.getParameter("editStep"));
-        int minBound = Integer.parseInt(req.getParameter("minBound"));
-        int maxBound = Integer.parseInt(req.getParameter("maxBound"));
-        String measurement = req.getParameter("measurement");
 
-
-        int id = list.get(list.size() - 1).getId() + 1;
-
-        Ingredient data = new Ingredient(id, name, editable, editStep,minBound,maxBound,measurement);
-
-        list.add(data);
-
-
-        resp.getWriter().println(gson.toJson(list));
+        Ingredient ingredient = new Ingredient(0, name);
+        ingredientService.create(ingredient);
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().println("this is PUT method in ingredient ");
+        Ingredient ingr = mapper(req);
 
-        Ingredient ing = null;
-        int id = Integer.parseInt(req.getParameter("id"));
-
-        for (int i = 0; i < list.size(); i++){
-            if (list.get(i).getId() == id){
-                ing = list.get(i);
-                break;
-            }
-        }
-        if (ing == null){
-            resp.sendError(400, "not found");
+        Ingredient update = ingredientService.update(ingr.getId(),ingr);
+        if (update==null){
+            resp.sendError(400,"id not found for update object");
             return;
         }
-
-        String name = req.getParameter("name");
-        boolean editable = Boolean.parseBoolean(req.getParameter("editable"));
-        int editStep = Integer.parseInt(req.getParameter("editStep"));
-        int minBound = Integer.parseInt(req.getParameter("minBound"));
-        int maxBound = Integer.parseInt(req.getParameter("maxBound"));
-        String measurement = req.getParameter("measurement");
-
-        ing.setName(name);
-        ing.setEditable(editable);
-        ing.setEditStep(editStep);
-        ing.setMinBound(minBound);
-        ing.setMaxBound(maxBound);
-        ing.setMeasurement(measurement);
-
-        resp.getWriter().println(gson.toJson(list));
+        resp.getWriter().println(gson.toJson(update));
     }
+
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().println("this is DELETE method in ingredient");
+        int id= Integer.parseInt(req.getParameter("id"));
+        ingredientService.delete(id);
+    }
 
-        int delId =  Integer.parseInt(req.getParameter("id"));
+    private Ingredient mapper(HttpServletRequest req) {
+        int id;
+        String name;
 
-        List<Ingredient> collect = list.stream().filter(item -> item.getId() == delId ).collect(Collectors.toList());
+        try {
+            id = Integer.parseInt(req.getParameter("id"));
+        } catch (NumberFormatException ex) {
+            id = 0;
+        }
+        try {
+            name = req.getParameter("name");
+        } catch (Exception ex) {
+            name = "";
+        }
 
-        list.removeAll(collect);
-
-        resp.getWriter().println(gson.toJson(list));
+        Ingredient ingredient = new Ingredient(id, name);
+        return ingredient;
     }
 }

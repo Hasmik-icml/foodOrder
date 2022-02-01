@@ -19,7 +19,6 @@ public class TableController extends HttpServlet {
     private final TableService tableService = new TableServiceImpl();
     private final Gson gson = new Gson();
 
-
     /**
      * * this method is getting parameters from request with name (url) and with switch case and maps request for concrete case
      */
@@ -39,13 +38,13 @@ public class TableController extends HttpServlet {
                     data.add(read);
                 }
                 break;
-            case "get-by-busy":
-                boolean isBusy = Boolean.parseBoolean(req.getParameter("is-busy"));
-                data = tableService.readByBusy(isBusy);
-                break;
             case "get-by-seat":
                 int seats = Integer.parseInt(req.getParameter("seats"));
                 data = tableService.readBySeatCount(seats);
+                break;
+            case "get-by-busy":
+                boolean isBusy = Boolean.parseBoolean(req.getParameter("is-busy"));
+                data = tableService.readByBusy(isBusy);
                 break;
             default:
                 resp.sendError(404, "provided URL not found for analyse");
