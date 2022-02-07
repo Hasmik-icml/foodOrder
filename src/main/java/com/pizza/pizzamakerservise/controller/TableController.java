@@ -4,6 +4,7 @@ import com.pizza.pizzamakerservise.model.Table;
 import com.google.gson.Gson;
 import com.pizza.pizzamakerservise.service.TableService;
 import com.pizza.pizzamakerservise.service.impl.TableServiceImpl;
+import com.pizza.pizzamakerservise.util.AccessControlOriginFilter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,6 +25,7 @@ public class TableController extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        AccessControlOriginFilter.setAccessControlHeaders(resp);
         List<Table> data = new LinkedList<>();
         final String url = req.getParameter("url");
 
@@ -56,12 +58,14 @@ public class TableController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        AccessControlOriginFilter.setAccessControlHeaders(resp);
         Table table = mapper(req);
         tableService.create(table);
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        AccessControlOriginFilter.setAccessControlHeaders(resp);
         Table table = mapper(req);
         int id = table.getId();
         resp.
@@ -71,6 +75,7 @@ public class TableController extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        AccessControlOriginFilter.setAccessControlHeaders(resp);
         int id = Integer.parseInt(req.getParameter("id"));
         tableService.delete(id);
 

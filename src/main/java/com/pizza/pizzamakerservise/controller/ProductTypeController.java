@@ -5,6 +5,7 @@ import com.pizza.pizzamakerservise.model.ProductType;
 import com.pizza.pizzamakerservise.model.Table;
 import com.pizza.pizzamakerservise.service.ProductTypeService;
 import com.pizza.pizzamakerservise.service.impl.ProductTypeServiceImpl;
+import com.pizza.pizzamakerservise.util.AccessControlOriginFilter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,6 +26,7 @@ public class ProductTypeController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        AccessControlOriginFilter.setAccessControlHeaders(resp);
         List<ProductType> data = new LinkedList<>();
         final String url = req.getParameter("url");
 
@@ -50,20 +52,16 @@ public class ProductTypeController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        AccessControlOriginFilter.setAccessControlHeaders(resp);
         resp.getWriter().println("this is POST method");
 
         int id = list.get(list.size() - 1).getId() + 1;
         String name = req.getParameter("name");
-
-        //ProductType data = new ProductType(id,name);
-
-        //list.add(data);
-
-        //resp.getWriter().println(gson.toJson(list));
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        AccessControlOriginFilter.setAccessControlHeaders(resp);
         System.out.println("desk");
         resp.getWriter().println("this is PUT method");
 
@@ -91,6 +89,7 @@ public class ProductTypeController extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        AccessControlOriginFilter.setAccessControlHeaders(resp);
         resp.getWriter().println("this is a delete method");
 
         int delId = Integer.parseInt(req.getParameter("idToDelete"));

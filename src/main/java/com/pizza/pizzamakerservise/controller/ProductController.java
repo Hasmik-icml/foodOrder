@@ -7,6 +7,7 @@ import com.pizza.pizzamakerservise.model.ProductType;
 import com.pizza.pizzamakerservise.model.dto.ProductDto;
 import com.pizza.pizzamakerservise.service.ProductService;
 import com.pizza.pizzamakerservise.service.impl.ProductServiceImpl;
+import com.pizza.pizzamakerservise.util.AccessControlOriginFilter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -20,13 +21,12 @@ import java.util.stream.Collectors;
 
 
 public class ProductController extends HttpServlet {
-    private List<Product> list = new LinkedList<>();
-    private static Random random = new Random();
-    private Gson gson = new Gson();
+    private final ProductService productService = new ProductServiceImpl();
+    private final Gson gson = new Gson();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ProductService productService = new ProductServiceImpl();
+        AccessControlOriginFilter.setAccessControlHeaders(resp);
         String url = req.getParameter("url");
         Gson gson = new Gson();
         List<ProductDto> data = new LinkedList<>();
@@ -51,27 +51,11 @@ public class ProductController extends HttpServlet {
         resp.getWriter().println(gson.toJson(data));
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-    }
-
-
-    @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-    }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().println("this is a delete method");
-
-        int delId = Integer.parseInt(req.getParameter("idToDelete"));
-
-        List<Product> collect = list.stream().filter(item -> item.getId() == delId).collect(Collectors.toList());
-
-        list.removeAll(collect);
-
-        resp.getWriter().println(gson.toJson(list));
+        AccessControlOriginFilter.setAccessControlHeaders(resp);
+        int id = Integer.parseInt(req.getParameter("id"));
+        productService.delete(id);
     }
 }

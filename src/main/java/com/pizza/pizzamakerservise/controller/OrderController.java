@@ -5,6 +5,7 @@ import com.pizza.pizzamakerservise.model.Order;
 import com.pizza.pizzamakerservise.model.Table;
 import com.pizza.pizzamakerservise.service.OrderService;
 import com.pizza.pizzamakerservise.service.impl.OrderServiceImpl;
+import com.pizza.pizzamakerservise.util.AccessControlOriginFilter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,86 +22,63 @@ public class OrderController extends HttpServlet {
 
      @Override
      protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-          List<Order> data = new LinkedList<>();
-
-          final String url = req.getParameter("url");
+          AccessControlOriginFilter.setAccessControlHeaders(resp);
+          String url = req.getParameter("url");
 
           switch (url) {
-               case "get-all":
-                    data = orderService.readAll();// վերադարձնում է զանգված
+               case "read-all":
+                    resp.getWriter().println(gson.toJson(orderService.readAll()));
                     break;
-               case "get-by-id":
-                    int id = Integer.parseInt(req.getParameter("table_id"));
-                    Order read = orderService.read(id); // վերադարձնում է օբյեկտ
-                    if ( read != null){
-                         data.add(read);
-                    }
-               break;
-               default:
-                    resp.sendError(404, "provided URL not found for analyse");
+               case "read-by-table-id":
+                    int tableId = Integer.parseInt(req.getParameter("table_id"));
+                    resp.getWriter().println(gson.toJson(orderService.read(tableId)));
                     break;
+
           }
-          resp.getWriter().println(gson.toJson(data));
      }
 
      @Override
      protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+          AccessControlOriginFilter.setAccessControlHeaders(resp);
           Order order = mapper(req);
           orderService.create(order);
      }
 
      @Override
      protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+          AccessControlOriginFilter.setAccessControlHeaders(resp);
           Order order = mapper(req);
-          int table_id = order.getTable_id();
-          resp.
-                  getWriter().
-                  println(gson.toJson(orderService.update(table_id, order)));
+          orderService.update(order);
      }
 
      @Override
      protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-          int table_id = Integer.parseInt(req.getParameter("table_id"));
-          orderService.delete(table_id);
+          AccessControlOriginFilter.setAccessControlHeaders(resp);
+          int id = Integer.parseInt(req.getParameter("id"));
+          orderService.delete(id);
      }
 
 
      private Order mapper(HttpServletRequest req) {
-          int id;
-          int table_id;
-          boolean in_process;
-          int productId;
-          int quantity;
-          float amount;
+          boolean isInProcess = Boolean.parseBoolean(req.getParameter("in_process"));
+          int id = 0;
+          int tableId = 0;
+          int productId = 0;
+          int quantity = 0;
+          float amount = 0;
+
 
           try {
                id = Integer.parseInt(req.getParameter("id"));
-          } catch (NumberFormatException ex) {
-               id = 0;
-          }
-          try {
-               table_id = Integer.parseInt(req.getParameter("table_id"));
-          } catch (NumberFormatException ex) {
-               table_id = 0;
-          }
-          try {
-               productId = Integer.parseInt(req.getParameter("productId"));
-          } catch (NumberFormatException ex) {
-               productId = 0;
-          }
-          try {
+               tableId = Integer.parseInt(req.getParameter("table_id"));
+               productId = Integer.parseInt(req.getParameter("product_id"));
                quantity = Integer.parseInt(req.getParameter("quantity"));
-          } catch (NumberFormatException ex) {
-               quantity = 0;
-          }
-          try {
                amount = Float.parseFloat(req.getParameter("amount"));
-          } catch (NumberFormatException ex) {
-               amount = 0;
+          } catch (NumberFormatException numberFormatException) {
+               numberFormatException.printStackTrace();
           }
-          in_process = Boolean.parseBoolean(req.getParameter("in_process"));
 
-          Order order = new Order(id, table_id, in_process, productId, quantity,amount);
-          return order;
+          return new Order(id, tableId, isInProcess, productId, quantity, amount);
      }
+
 }

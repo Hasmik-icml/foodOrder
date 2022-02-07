@@ -6,7 +6,7 @@ import com.pizza.pizzamakerservise.service.IngredientService;
 
 import java.util.List;
 
-public class IngredientSericeImpl implements IngredientService {
+public class IngredientServiceImpl implements IngredientService {
     private final IngredientRepository ingredientRepository = new IngredientRepository();
     @Override
     public Ingredient read(int id) {

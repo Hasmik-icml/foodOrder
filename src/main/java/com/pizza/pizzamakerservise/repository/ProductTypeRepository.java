@@ -80,7 +80,7 @@ public class ProductTypeRepository {
         ResultSet resultSet = null;
 
         try {
-            pstmt = connection.prepareStatement("SELECT * from `productType`");
+            pstmt = connection.prepareStatement("SELECT * from `product_Type`");
             resultSet = pstmt.executeQuery();
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
@@ -90,8 +90,9 @@ public class ProductTypeRepository {
 
 
         try {
-            pstmt.close();
+
             resultSet.close();
+            pstmt.close();
             connection.close();
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
@@ -171,15 +172,10 @@ public class ProductTypeRepository {
         return data;
     }
 
-    private static ProductType mapper(ResultSet resultSet)  {
+    private static ProductType mapper(ResultSet resultSet) throws SQLException {
         ProductType productType = new ProductType();
-        try {
-            productType.setId(resultSet.getInt("id"));
-            productType.setName(resultSet.getString("name"));
-        }catch(SQLException sqlException) {
-            sqlException.printStackTrace();
-        }
-
+        productType.setId(resultSet.getInt("id"));
+        productType.setName(resultSet.getString("name"));
         return productType;
     }
 }

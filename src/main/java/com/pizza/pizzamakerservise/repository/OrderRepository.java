@@ -10,58 +10,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderRepository {
-    public Order read(int table_id) {
-        Connection connection = SQLConnecter.getConnection();
-        PreparedStatement pstmt = null;
-        ResultSet resultSet = null;
-        try {
-            pstmt = connection.prepareStatement("SELECT * from `order` WHERE table_id=?");
-            pstmt.setInt(1, table_id);
-            resultSet = pstmt.executeQuery();
-
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-        }
-        Order order=null;
-        try{
-            while (resultSet.next()){
-                order=mapper(resultSet);
-            }
-        }catch (SQLException ex){
-            ex.printStackTrace();
-        }
-        try{
-            pstmt.close();
-            resultSet.close();
-            connection.close();
-        }catch (SQLException sqlException){
-            sqlException.printStackTrace();
-        }
-        return order;
-
+    public List<Order> read(int table_id) {
+        return readAll().stream().filter(item -> item.getTable_id() == table_id).collect(Collectors.toList());
     }
 
     public List<Order> readAll() {
-
         Connection connection = SQLConnecter.getConnection();
-        PreparedStatement pstmt = null;
-        ResultSet resultSet = null;
+        List<Order> data = new LinkedList<>();
 
         try {
-            pstmt = connection.prepareStatement("SELECT * from `order`");
-            resultSet = pstmt.executeQuery();
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-        }
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from `order`");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            data.addAll(mapperList(resultSet));
 
-        List<Order> data = mapperList(resultSet);
-
-
-        try {
-            pstmt.close();
-            resultSet.close();
+            preparedStatement.close();
             connection.close();
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
@@ -91,10 +56,10 @@ public class OrderRepository {
         }
     }
 
-    public Order update(int id, Order order) { /// Id or table_id
+    public Order update(Order order) {
         Connection connection = SQLConnecter.getConnection();
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `order` SET table_id = ?, in_process = ?, productId=?, quantity = ?, amount = ? WHERE id = ?");
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `order` SET table_id =?, in_process = ?, productId=?, quantity = ?, amount = ? WHERE id = ?");
             preparedStatement.setInt(1, order.getTable_id());
             preparedStatement.setBoolean(2, order.isIn_process());
             preparedStatement.setInt(3, order.getProductId());
@@ -102,7 +67,7 @@ public class OrderRepository {
             preparedStatement.setFloat(5, order.getAmount());
             preparedStatement.setInt(6, order.getId());
 
-            int i = preparedStatement.executeUpdate();//???????????????
+            int i = preparedStatement.executeUpdate();
 
             preparedStatement.close();
 
@@ -126,7 +91,7 @@ public class OrderRepository {
             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `order` where table_id=?");
             preparedStatement.setInt(1, table_id);
 
-            int i = preparedStatement.executeUpdate();//????????????????
+            int i = preparedStatement.executeUpdate();
 
             preparedStatement.close();
             connection.close();
@@ -136,7 +101,7 @@ public class OrderRepository {
 
     }
 
-    private static List<Order> mapperList(ResultSet resultSet) {
+    private  List<Order> mapperList(ResultSet resultSet) {
         List<Order> data = new LinkedList<>();
         try {
             while (resultSet.next()) {
@@ -148,20 +113,16 @@ public class OrderRepository {
         return data;
     }
 
-    private static Order mapper(ResultSet resultSet) {
-        Order o = new Order();
-        try {
-            o.setId(resultSet.getInt("id"));
-            o.setTable_id(resultSet.getInt("table_id"));
-            o.setIn_process(resultSet.getBoolean("in_process"));
-            o.setProductId(resultSet.getInt("productId"));
-            o.setQuantity(resultSet.getInt("quantity"));
-            o.setAmount(resultSet.getFloat("amount"));
+    private Order mapper(ResultSet resultSet) throws SQLException {
+        int id = resultSet.getInt("id");
+        int table_id = resultSet.getInt("table_id");
+        boolean in_process = resultSet.getBoolean("in_process");
+        int product_id = resultSet.getInt("product_id");
+        int quantity = resultSet.getInt("quantity");
+        float amount = resultSet.getFloat("amount");
 
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-        }
-        return o;
+        return new Order(id, table_id, in_process, product_id, quantity, amount);
+
     }
 
 }
