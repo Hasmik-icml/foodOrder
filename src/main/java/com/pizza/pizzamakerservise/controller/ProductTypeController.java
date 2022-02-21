@@ -2,7 +2,6 @@ package com.pizza.pizzamakerservise.controller;
 
 import com.google.gson.Gson;
 import com.pizza.pizzamakerservise.model.ProductType;
-import com.pizza.pizzamakerservise.model.Table;
 import com.pizza.pizzamakerservise.service.ProductTypeService;
 import com.pizza.pizzamakerservise.service.impl.ProductTypeServiceImpl;
 import com.pizza.pizzamakerservise.util.AccessControlOriginFilter;

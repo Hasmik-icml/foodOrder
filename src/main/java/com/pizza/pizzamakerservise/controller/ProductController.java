@@ -1,9 +1,6 @@
 package com.pizza.pizzamakerservise.controller;
 
 import com.google.gson.Gson;
-import com.pizza.pizzamakerservise.model.Ingredient;
-import com.pizza.pizzamakerservise.model.Product;
-import com.pizza.pizzamakerservise.model.ProductType;
 import com.pizza.pizzamakerservise.model.dto.ProductDto;
 import com.pizza.pizzamakerservise.service.ProductService;
 import com.pizza.pizzamakerservise.service.impl.ProductServiceImpl;
@@ -16,8 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
 
 
 public class ProductController extends HttpServlet {

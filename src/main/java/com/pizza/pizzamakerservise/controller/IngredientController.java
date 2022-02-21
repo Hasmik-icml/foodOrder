@@ -2,7 +2,6 @@ package com.pizza.pizzamakerservise.controller;
 
 import com.google.gson.Gson;
 import com.pizza.pizzamakerservise.model.Ingredient;
-import com.pizza.pizzamakerservise.model.Table;
 import com.pizza.pizzamakerservise.service.IngredientService;
 import com.pizza.pizzamakerservise.service.impl.IngredientServiceImpl;
 import com.pizza.pizzamakerservise.util.AccessControlOriginFilter;
@@ -14,8 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
+
 
 public class IngredientController extends HttpServlet {
     private final IngredientService ingredientService = new IngredientServiceImpl();

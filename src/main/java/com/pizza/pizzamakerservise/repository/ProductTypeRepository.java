@@ -1,16 +1,14 @@
 package com.pizza.pizzamakerservise.repository;
 
 import com.pizza.pizzamakerservise.model.ProductType;
-import com.pizza.pizzamakerservise.model.Table;
 import com.pizza.pizzamakerservise.util.SQLConnecter;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
+
 
 public class ProductTypeRepository {
 

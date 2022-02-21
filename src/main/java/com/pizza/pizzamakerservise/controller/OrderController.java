@@ -2,7 +2,6 @@ package com.pizza.pizzamakerservise.controller;
 
 import com.google.gson.Gson;
 import com.pizza.pizzamakerservise.model.Order;
-import com.pizza.pizzamakerservise.model.Table;
 import com.pizza.pizzamakerservise.service.OrderService;
 import com.pizza.pizzamakerservise.service.impl.OrderServiceImpl;
 import com.pizza.pizzamakerservise.util.AccessControlOriginFilter;
@@ -12,11 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
+
 
 public class OrderController extends HttpServlet {
-
      private final OrderService orderService = new OrderServiceImpl();
      private final Gson gson = new Gson();
 

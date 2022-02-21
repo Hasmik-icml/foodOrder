@@ -2,7 +2,6 @@ package com.pizza.pizzamakerservise.repository;
 
 import com.pizza.pizzamakerservise.model.Table;
 import com.pizza.pizzamakerservise.util.SQLConnecter;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
